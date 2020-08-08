@@ -7,6 +7,7 @@ let allDogFetch = () => {
   fetch("http://localhost:3000/pups")
   .then(res => res.json())
   .then((pupObjArray) => {
+    console.log(pupObjArray)
     pupObjArray.forEach((pupObj) => {
       turnPupIntoHTML(pupObj)
     })
@@ -17,6 +18,7 @@ allDogFetch()
 
 let turnPupIntoHTML = (pupObj) => {
   // { id: num, name: name, isGoodDog: boolean, image: url }
+  console.log("turn pup", pupObj)
 
   let dogSpan = document.createElement("span")
   dogSpan.innerText = pupObj.name
@@ -25,38 +27,26 @@ let turnPupIntoHTML = (pupObj) => {
   dogBar.append(dogSpan)
 
   let pupImg = document.createElement("img")
-
   let pupNameH2 = document.createElement("h2")
-
   let goodPupButton = document.createElement("button")
 
   dogSpan.addEventListener("click", (evt) => {
-    if (dogShow.children.length > 0) { 
-      dogShow.children[0].src = pupObj.image
-      dogShow.children[1].innerText = pupObj.name
-      if (pupObj.isGoodDog) { 
-        dogShow.children[2].innerText = "Good Dog!" 
-      }
-      else { 
-        dogShow.children[2].innerText = "Bad Dog!" 
-      }
+    dogShow.innerHTML = ""
+    pupImg.src = pupObj.image
+    pupNameH2.innerText = pupObj.name
+    if (pupObj.isGoodDog) { 
+      goodPupButton.innerText = "Good Dog!" 
     }
-    else {
-      pupImg.src = pupObj.image
-      pupNameH2.innerText = pupObj.name
-      if (pupObj.isGoodDog) { 
-        goodPupButton.innerText = "Good Dog!" 
-      }
-      else { 
-        goodPupButton.innerText = "Bad Dog!" 
-      }
-      dogShow.append(pupImg, pupNameH2, goodPupButton)
+    else { 
+      goodPupButton.innerText = "Bad Dog!" 
     }
+    dogShow.append(pupImg, pupNameH2, goodPupButton)
   })
 
   goodPupButton.addEventListener("click", (evt) => {
     // Update memory, update database, update page
     pupObj.isGoodDog = !pupObj.isGoodDog
+    console.log("pup obj", pupObj)
 
     fetch(`http://localhost:3000/pups/${pupObj.id}`, {
       method: "PATCH",
